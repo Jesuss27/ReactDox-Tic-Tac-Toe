@@ -48,26 +48,35 @@ function Square(props) {
     constructor(props){
       super(props);
       this.state = {
-          squares : Array(9).fill(null),
-          xIsNext : true
+          history:[{
+            squares: Array(9).fill(null),
+          }],
+          xIsNext: true ,
       };
   }
 
   handleClick(i){
-    const squares= this.state.squares.slice();
+    const history = this.state.history;
+    const current = history[history.length - 1] ;
+
+    const squares= current.squares.slice();
     if( calculateWinner(squares) || squares[i]){
         return 
     }
     squares[i] = this.state.xIsNext ? "X" : "O" ;
-    this.setState({
-        squares:squares , 
+    this.setState({ // state change comes by modifying directly object in the history array
+        history: history.concat([{
+          squares:squares,
+        }]), 
         xIsNext : !this.state.xIsNext,
     })
 }
 
 
     render() {
-      const winner = calculateWinner(this.state.squares);
+      const history = this.state.history;
+      const current = history[history.length - 1] ; 
+      const winner = calculateWinner(current.squares);
         let status;
         if(winner) {
             status = "Winner: " + winner; 
@@ -77,7 +86,7 @@ function Square(props) {
       return (
         <div className="game">
           <div className="game-board">
-            <Board squares={this.state.squares}
+            <Board squares={current.squares}
                     onClick={(i) => this.handleClick(i)}/>
           </div>
           <div className="game-info">
