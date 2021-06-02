@@ -65,7 +65,7 @@ function Square(props) {
     }
     squares[i] = this.state.xIsNext ? "X" : "O" ;
     this.setState({ // state change comes by modifying directly object in the history array
-        history: history.concat([{
+        history: history.concat([{ // adds state of squares each move to history array
           squares:squares,
         }]), 
         xIsNext : !this.state.xIsNext,
@@ -77,6 +77,18 @@ function Square(props) {
       const history = this.state.history;
       const current = history[history.length - 1] ; 
       const winner = calculateWinner(current.squares);
+
+      const moves = history.map((step,move) => {
+        const description = move ?
+          "Go to move #" + move :
+          "Go to game start" ;
+          return (
+            <li>
+              <button onClick={() => this.jumpTo(move)}>{description}</button>
+            </li>
+          );
+      });
+
         let status;
         if(winner) {
             status = "Winner: " + winner; 
@@ -91,7 +103,7 @@ function Square(props) {
           </div>
           <div className="game-info">
             <div>{status}</div>
-            <ol>{/* TODO */}</ol>
+            <ol>{moves}</ol>
           </div>
         </div>
       );
