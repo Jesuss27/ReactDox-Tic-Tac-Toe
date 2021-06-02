@@ -6,24 +6,34 @@ class Square extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            
+            value: null
+
         }
     }
 
     render() {
       return (
         <button className="square" onClick={() => {
-            alert("click")
+            this.setState({
+                value:"X"
+            })
         }}>
-          {this.props.value}
+          {this.state.value}
         </button>
       );
     }
   }
   
   class Board extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            squares : Array(9).fill(null)
+        };
+    }
+
     renderSquare(i) {
-      return <Square value={i} />;
+      return <Square value={this.state.squares}  />;
     }
   
     render() {
