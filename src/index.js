@@ -2,13 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 function Square(props) {
-    
-      return (
-        <button className="square" onClick={props.onClick}>
-          {props.value}
-        </button>
-      );
-    
+
+      const className ="square"
+      if(this.props.selectedSquare){
+        className += "selectedSquare"
+      } {
+        return (
+          <button className={className} onClick={props.onClick}>
+            {props.value}
+          </button>
+        ); 
+      };  
   }
   
   class Board extends React.Component {
@@ -53,6 +57,8 @@ function Square(props) {
           }],
           xIsNext: true ,
           stepNumber: 0,
+          locationHistory: [["x","x"]],
+          selectedSquare: null,
       };
   }
 
@@ -67,19 +73,25 @@ function Square(props) {
   handleClick(i){
     const history = this.state.history.slice(0,
       this.state.stepNumber + 1 );
+      const locationHistory = this.state.locationHistory.slice(0,
+        this.state.stepNumber + 1 );
     const current = history[history.length - 1] ;
 
     const squares= current.squares.slice();
+    const location = findPostion(i);
     if( calculateWinner(squares) || squares[i]){
         return 
     }
     squares[i] = this.state.xIsNext ? "X" : "O" ;
+    const selectedSquare = squares[i] ;
     this.setState({ // state change comes by modifying directly object in the history array
         history: history.concat([{ // adds state of squares each move to history array
           squares:squares,
         }]), 
         xIsNext : !this.state.xIsNext,
         stepNumber: history.length,
+        locationHistory: locationHistory.concat([location])
+
     })
 }
 
@@ -88,14 +100,17 @@ function Square(props) {
       const history = this.state.history;
       const current = history[this.state.stepNumber] ; 
       const winner = calculateWinner(current.squares);
-
       const moves = history.map((step, move) => {
+        const location = this.state.locationHistory[move] ; 
         const description = move ?
           "Go to move #" + move :
           "Go to game start" ;
+      
           return (
             <li key={move}>
               <button onClick={() => this.jumpTo(move)}>{description}</button>
+              <h4>Move Location :</h4>
+              <h5>Column: {location[0]}</h5> <h5>Row: {location[1]}</h5>
             </li>
           );
       });
@@ -150,3 +165,20 @@ function Square(props) {
     }
     return null;
   } 
+
+  function findPostion(index) {
+    const locations = [
+      [1,1],
+      [2,1],
+      [3,1],
+      [1,2],
+      [2,2],
+      [3,2],
+      [1,3],
+      [2,3],
+      [3,3],
+    ]
+    const[col , row] = locations[index]
+    return [col, row]
+
+  }
