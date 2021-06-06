@@ -2,27 +2,34 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 function Square(props) {
-
-      const className ="square"
-      if(this.props.selectedSquare){
-        className += "selectedSquare"
-      } {
-        return (
-          <button className={className} onClick={props.onClick}>
-            {props.value}
-          </button>
-        ); 
-      };  
+    
+      return (
+        <button className={`square ${props.selectedSquare ? "selected" : ""}`} onClick={props.onClick}>
+          {props.value}
+        </button>
+      );
+    
   }
   
   class Board extends React.Component {
+    
+    isSquareSelected(i){
+      let selectedSquare = false ;
+      if(this.props.selectedSquare === i ){
+        selectedSquare = true;
+        
+        return selectedSquare
 
-
-
-
+      } {
+        return selectedSquare
+      }
+    }
 
     renderSquare(i) {
-      return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
+      const resSquareSelected = this.isSquareSelected(i)
+      console.log(resSquareSelected) ;
+
+        return <Square selectedSquare={resSquareSelected} value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
     }
 
     render() {
@@ -53,7 +60,7 @@ function Square(props) {
       super(props);
       this.state = {
           history:[{
-            squares: Array(9).fill(null),
+            squares: Array(9).fill(null), selected : false ,
           }],
           xIsNext: true ,
           stepNumber: 0,
@@ -79,18 +86,22 @@ function Square(props) {
 
     const squares= current.squares.slice();
     const location = findPostion(i);
+
+    const selectedSquare = i ;
+
     if( calculateWinner(squares) || squares[i]){
         return 
     }
     squares[i] = this.state.xIsNext ? "X" : "O" ;
-    const selectedSquare = squares[i] ;
     this.setState({ // state change comes by modifying directly object in the history array
         history: history.concat([{ // adds state of squares each move to history array
           squares:squares,
         }]), 
         xIsNext : !this.state.xIsNext,
         stepNumber: history.length,
-        locationHistory: locationHistory.concat([location])
+        locationHistory: locationHistory.concat([location]),
+        selectedSquare:selectedSquare,
+
 
     })
 }
@@ -100,6 +111,8 @@ function Square(props) {
       const history = this.state.history;
       const current = history[this.state.stepNumber] ; 
       const winner = calculateWinner(current.squares);
+      const lastLocation = this.state.locationHistory[history.length - 1]
+      console.log(lastLocation)
       const moves = history.map((step, move) => {
         const location = this.state.locationHistory[move] ; 
         const description = move ?
@@ -125,7 +138,8 @@ function Square(props) {
         <div className="game">
           <div className="game-board">
             <Board squares={current.squares}
-                    onClick={(i) => this.handleClick(i)}/>
+                    onClick={(i) => this.handleClick(i)}
+                    selectedSquare = {this.state.selectedSquare}/>
           </div>
           <div className="game-info">
             <div>{status}</div>
