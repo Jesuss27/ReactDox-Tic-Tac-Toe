@@ -61,6 +61,7 @@ function Square(props) {
           stepNumber: 0,
           locationHistory: [["x","x"]],
           selectedSquare: null,
+          ascending : true,
       };
   }
 
@@ -102,6 +103,14 @@ function Square(props) {
 }
 
 
+
+  toggleMoves(){
+    this.setState({
+      ascending : !this.state.ascending
+    })
+  }
+
+
     render() {
       const history = this.state.history;
       const current = history[this.state.stepNumber] ; 
@@ -138,7 +147,8 @@ function Square(props) {
           </div>
           <div className="game-info">
             <div>{status}</div>
-            <ul>{moves}</ul>
+            <ul>{this.state.ascending ? moves : moves.reverse()}</ul>
+            <button onClick={() => this.toggleMoves()}>toggle move order</button>
           </div>
         </div>
       );
