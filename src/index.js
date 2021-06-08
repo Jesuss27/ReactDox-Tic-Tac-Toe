@@ -81,6 +81,7 @@ function Square(props) {
           selectedSquare: null,
           ascending : true,
           winningLine: [],
+          moveCounter : 0,
       };
   }
 
@@ -115,7 +116,7 @@ function Square(props) {
     if(winner){
       winningSquares = winner.winningSquares
     }
-    console.log(winningSquares)
+    
     
 
 
@@ -128,8 +129,11 @@ function Square(props) {
         stepNumber: history.length,
         locationHistory: locationHistory.concat([location]),
         selectedSquare:selectedSquare,
-        winningLine : winningSquares
+        winningLine : winningSquares,
+        moveCounter : this.state.moveCounter + 1
     })
+
+    console.log(this.state.moveCounter)
 
 
 
@@ -167,6 +171,10 @@ function Square(props) {
             
         } else {
             status = this.state.xIsNext ? 'Next player: X' : 'Next player: O' ;
+        }
+
+        if(this.state.moveCounter >= 9){
+          status= "Game is ends in a draw" ; 
         }
       return (
         <div className="game">
